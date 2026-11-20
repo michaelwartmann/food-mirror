@@ -230,6 +230,8 @@ function learn(it){
 }
 
 // ---------- server ----------
+// phones add capitals, spaces and autocorrect; keep only the plain letters of the code word
+const cleanCode=v=>String(v||"").toLowerCase().replace(/[^a-z0-9]/g,"");
 let code=localStorage.getItem("em.code")||"";
 async function call(body){
   const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json","x-code":code},body:JSON.stringify({...body,lang})});
@@ -264,8 +266,8 @@ function recorder(btn,onText,onState){
 }
 function onErr(e){toast(e.message==="code"?t("codeBad"):e.message==="limit"?t("limit"):t("err"));}
 function askCode(then){
-  openSheet(`<div class="bubble">${t("codeQ")}</div><p class="hint">${t("codeHint")}</p><label class="sr" for="cw">${t("codeQ")}</label><input id="cw" type="text" autocomplete="off" autocapitalize="none"><div class="btns"><button class="btn pri" type="button" id="cw-ok">${t("next")}</button></div>`);
-  const go=async()=>{code=sb.querySelector("#cw").value.trim();try{await call({action:"auth"});localStorage.setItem("em.code",code);then();}catch(e){onErr(e);}};
+  openSheet(`<div class="bubble">${t("codeQ")}</div><p class="hint">${t("codeHint")}</p><label class="sr" for="cw">${t("codeQ")}</label><input id="cw" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><div class="btns"><button class="btn pri" type="button" id="cw-ok">${t("next")}</button></div>`);
+  const go=async()=>{code=cleanCode(sb.querySelector("#cw").value);try{await call({action:"auth"});localStorage.setItem("em.code",code);then();}catch(e){onErr(e);}};
   sb.querySelector("#cw-ok").onclick=go;sb.querySelector("#cw").onkeydown=e=>{if(e.key==="Enter")go();};
 }
 
@@ -282,9 +284,9 @@ function setLang(l){lang=l;localStorage.setItem("em.lang",l);document.documentEl
 function lockScreen(){
   document.querySelector(".tabs").hidden=true;
   view.innerHTML=`<div style="text-align:center;padding-top:8vh"><img src="icons/icon.svg" alt="" width="120" height="120"><h1>${t("appTitle")}</h1><p class="lead">${t("lockHint")}</p></div>
-   <div class="card"><label for="lk"><b>${t("lockQ")}</b></label><input id="lk" type="password" autocomplete="off" autocapitalize="none" style="margin-top:10px">
+   <div class="card"><label for="lk"><b>${t("lockQ")}</b></label><input id="lk" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="text" style="margin-top:10px">
    <p class="hint" id="lk-st" aria-live="polite"></p><div class="btns"><button class="btn pri" type="button" id="lk-ok">${t("enter")}</button></div></div>`;
-  const go=async()=>{code=view.querySelector("#lk").value.trim();if(!code)return;view.querySelector("#lk-st").textContent="…";
+  const go=async()=>{code=cleanCode(view.querySelector("#lk").value);if(!code)return;view.querySelector("#lk-st").textContent="…";
     try{await call({action:"auth"});localStorage.setItem("em.code",code);document.querySelector(".tabs").hidden=false;render();}
     catch(e){code="";view.querySelector("#lk-st").textContent=e.message==="code"?t("codeBad"):t("err");}};
   view.querySelector("#lk-ok").onclick=go;view.querySelector("#lk").onkeydown=e=>{if(e.key==="Enter")go();};
