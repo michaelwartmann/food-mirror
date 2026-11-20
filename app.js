@@ -6,7 +6,7 @@ const API = "https://bbscvofuqucsxvamkwnx.supabase.co/functions/v1/essensspiegel
 // ---------- texts ----------
 const T = {
 de:{
- tToday:"Heute",tStock:"Vorrat",tMirror:"Spiegel",tMore:"Mehr",close:"Schließen",
+ brand:"ESSENSSPIEGEL",appTitle:"Essensspiegel",lockQ:"Willkommen. Wie heißt das Codewort?",lockHint:"Der Essensspiegel ist noch in der Testphase. Wer das Codewort kennt, darf rein.",enter:"Hinein",tToday:"Heute",tStock:"Vorrat",tMirror:"Spiegel",tMore:"Mehr",close:"Schließen",
  hello:["Guten Morgen","Hallo","Guten Abend"],
  todayLead:"Iss, was du magst. Zeig oder sag mir kurz, was war. Den Rest mache ich.",
  aEat:"Gegessen",aEatS:"Foto, ein paar Worte oder einfach antippen",
@@ -94,7 +94,7 @@ de:{
  cats:{veg:"Gemüse",fruit:"Obst",wholegrain:"Vollkorn",refined:"Weißmehl, weißer Reis",potato:"Kartoffeln",legume:"Hülsenfrüchte",dairy:"Milchprodukte",egg:"Eier",meat:"Fleisch",procmeat:"Wurst",fish:"Fisch",nuts:"Nüsse, Samen",fat:"Fett, Öl",ready:"Fertiges, Fast Food",sweets:"Süßes",snack:"Knabberzeug",sugardrink:"Limo",juice:"Saft",alcohol:"Alkohol",drink:"Getränk",other:"Sonstiges"},
 },
 en:{
- tToday:"Today",tStock:"Stock",tMirror:"Mirror",tMore:"More",close:"Close",
+ brand:"FOOD MIRROR",appTitle:"Food Mirror",lockQ:"Welcome. What is the code word?",lockHint:"Food Mirror is still being tested. If you know the code word, come in.",enter:"Come in",tToday:"Today",tStock:"Stock",tMirror:"Mirror",tMore:"More",close:"Close",
  hello:["Good morning","Hello","Good evening"],
  todayLead:"Eat what you like. Show or tell me briefly what happened. I'll do the rest.",
  aEat:"Ate",aEatS:"Photo, a few words, or just tap",
@@ -276,7 +276,19 @@ function setLang(l){lang=l;localStorage.setItem("em.lang",l);document.documentEl
   document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===l));
   document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
   document.querySelectorAll("[data-t-aria]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.tAria)));
+  document.title=t("appTitle");
+  if(!code){lockScreen();return;}
   render();}
+function lockScreen(){
+  document.querySelector(".tabs").hidden=true;
+  view.innerHTML=`<div style="text-align:center;padding-top:8vh"><img src="icons/icon.svg" alt="" width="120" height="120"><h1>${t("appTitle")}</h1><p class="lead">${t("lockHint")}</p></div>
+   <div class="card"><label for="lk"><b>${t("lockQ")}</b></label><input id="lk" type="password" autocomplete="off" autocapitalize="none" style="margin-top:10px">
+   <p class="hint" id="lk-st" aria-live="polite"></p><div class="btns"><button class="btn pri" type="button" id="lk-ok">${t("enter")}</button></div></div>`;
+  const go=async()=>{code=view.querySelector("#lk").value.trim();if(!code)return;view.querySelector("#lk-st").textContent="…";
+    try{await call({action:"auth"});localStorage.setItem("em.code",code);document.querySelector(".tabs").hidden=false;render();}
+    catch(e){code="";view.querySelector("#lk-st").textContent=e.message==="code"?t("codeBad"):t("err");}};
+  view.querySelector("#lk-ok").onclick=go;view.querySelector("#lk").onkeydown=e=>{if(e.key==="Enter")go();};
+}
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();view.focus();scrollTo(0,0);});
 function setProfile(p){profile=p;localStorage.setItem("em.profile",p);S=load();render();scrollTo(0,0);}

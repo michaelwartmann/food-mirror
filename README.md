@@ -1,4 +1,4 @@
-# Essensspiegel / Food mirror
+# Food Mirror · Essensspiegel
 
 Eat what you like. Show or tell the app what you bought, ate or threw away: a photo, a few spoken words, or one tap on a meal you've had before. After a few days it mirrors back what stands out: strongly where things go well, plainly where they might be worth a thought. No judgement, no boxes, no calorie pressure.
 
@@ -15,3 +15,5 @@ Eat what you like. Show or tell the app what you bought, ate or threw away: a ph
 Vision + text: `google/gemini-3.8-flash` (fallback `anthropic/claude-haiku-5.5`), about half a cent per entry. Speech-to-text: Voxtral. Voice: MAI-Voice (German).
 
 MIT licence. Fonts: Nunito Sans and Bebas Neue, SIL OFL.
+
+Live (code word protected): https://向日葵.世界/food-mirror/
