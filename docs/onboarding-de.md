@@ -1,6 +1,6 @@
 # Willkommen beim Essensspiegel, Alina
 
-Kurze Anleitung, wie du mitmachen kannst. Du musst nichts programmieren können.
+Die App ist ein Geschenk: Nutz sie für dich, mit Klientinnen oder gar nicht, ganz wie du magst. Sie ist offen (MIT-Lizenz), du darfst sie also auch kopieren und zu deiner eigenen machen. Programmieren musst du dafür nicht.
 
 ## 1. Die App ausprobieren
 - Öffne **https://向日葵.世界/food-mirror/** auf dem Handy.
